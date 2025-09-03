@@ -1,0 +1,32 @@
+{% extends "profiles/base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}Диалог с {{ interlocutor.first_name }}{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Диалог с <a href="{% url 'profiles:profile_detail' pk=interlocutor.pk %}" class="text-decoration-none">{{ interlocutor.first_name }}</a></h1>
+
+<div class="card">
+    <div class="card-body" style="height: 50vh; overflow-y: auto;">
+        {% for message in messages_list %}
+            <div class="d-flex mb-3 {% if message.sender == user %}justify-content-end{% endif %}">
+                <div class="card {% if message.sender == user %}bg-primary text-white{% else %}bg-light{% endif %}" style="max-width: 70%;">
+                    <div class="card-body p-2">
+                        <p class="mb-0">{{ message.content }}</p>
+                        <small class="d-block text-end {% if message.sender == user %}text-white-50{% else %}text-muted{% endif %}">{{ message.timestamp|time:"H:i" }}</small>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="card-footer">
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-group">
+                {{ form.content }}
+                <button class="btn btn-primary" type="submit">Отправить</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

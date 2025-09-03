@@ -1,0 +1,41 @@
+{% extends "profiles/base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}Анкеты{% endblock %}
+{% block content %}
+<h1 class="mb-4">Поиск анкет</h1>
+<div class="card card-body mb-4">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-md-3">{{ form.city.label_tag }}{{ form.city }}</div>
+        <div class="col-md-2">{{ form.gender.label_tag }}{{ form.gender }}</div>
+        <div class="col-md-2">{{ form.min_age.label_tag }}{{ form.min_age }}</div>
+        <div class="col-md-2">{{ form.max_age.label_tag }}{{ form.max_age }}</div>
+        <div class="col-md-3"><button type="submit" class="btn btn-primary w-100">Найти</button></div>
+    </form>
+</div>
+<div class="row">
+    {% for profile in profiles %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <a href="{% url 'profiles:profile_detail' pk=profile.user.pk %}"><img src="{{ profile.photo.url }}" class="card-img-top" alt="Фото {{ profile.user.first_name }}" style="height: 300px; object-fit: cover;"></a>
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{% url 'profiles:profile_detail' pk=profile.user.pk %}" class="text-decoration-none text-dark">
+                        {{ profile.user.first_name }}, {{ profile.age }}
+                        <!-- ДОБАВЛЯЕМ ЗНАЧОК ВЕРИФИКАЦИИ -->
+                        {% if profile.is_verified %}
+                            <i class="bi bi-patch-check-fill text-primary" title="Профиль верифицирован"></i>
+                        {% endif %}
+                    </a>
+                </h5>
+                <p class="card-text text-muted">{{ profile.city }}</p>
+                <p class="card-text">{{ profile.about_me|truncatewords:15 }}</p>
+                <a href="{% url 'profiles:profile_detail' pk=profile.user.pk %}" class="btn btn-outline-primary">Смотреть профиль</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col"><div class="alert alert-info">По вашему запросу ничего не найдено.</div></div>
+    {% endfor %}
+</div>
+{% endblock %}
+
