@@ -82,12 +82,8 @@ WSGI_APPLICATION = 'orthodox_dating.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'orthodox_dating',     # Имя вашей базы данных
-        'USER': 'orthodox_dating',         # Пользователь базы данных
-        'PASSWORD': 'orthodox_dating', # Пароль пользователя
-        'HOST': 'localhost',    # Хост (обычно 'localhost' или IP)
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
