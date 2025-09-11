@@ -9,19 +9,11 @@ import cloudinary
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Теперь секретный ключ и режим отладки берутся из файла .env
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 # Позже здесь нужно будет указать ваш реальный домен
 ALLOWED_HOSTS = ['orthodox-dating-project.onrender.com']
-
-import os
-import cloudinary
-
-# Секретный ключ, который теперь считывается правильно
-SECRET_KEY = os.environ.get('SECRET_KEY')
-
-# ... остальные настройки ...
 
 # Cloudinary
 cloudinary.config(
@@ -120,6 +112,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
+
 
 
 
