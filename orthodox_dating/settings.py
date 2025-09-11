@@ -15,11 +15,18 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 # Позже здесь нужно будет указать ваш реальный домен
 ALLOWED_HOSTS = ['orthodox-dating-project.onrender.com']
 
-# Настройте Cloudinary, чтобы он автоматически использовал CLOUDINARY_URL
+import os
+import cloudinary
+
+# Секретный ключ, который теперь считывается правильно
+SECRET_KEY = os.environ.get('SECRET_KEY')
+
+# ... остальные настройки ...
+
+# Cloudinary
 cloudinary.config(
     secure=True
 )
-# Используйте CloudinaryStorage в качестве хранилища по умолчанию для медиафайлов
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Application definition
@@ -113,6 +120,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
+
 
 
 
