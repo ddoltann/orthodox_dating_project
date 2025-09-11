@@ -10,6 +10,8 @@ whitenoise==6.9.0
 gunicorn
 dj-database-url
 psycopg2-binary
+cloudinary
+
 
 
 
