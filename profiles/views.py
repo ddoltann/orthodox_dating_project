@@ -182,4 +182,25 @@ def get_new_messages(request, pk, last_timestamp):
 
     return JsonResponse({'messages': messages_data, 'last_timestamp': new_last_timestamp})
 
+@login_required
+def likes_received_list(request):
+    """
+    Отображает страницу со списком пользователей,
+    которые выразили симпатию текущему пользователю.
+    """
+    # 1. Находим все объекты Like, где получателем является текущий пользователь
+    likes = Like.objects.filter(user_to=request.user)
+    
+    # 2. Из этих лайков получаем ID всех отправителей
+    liker_ids = likes.values_list('user_from_id', flat=True)
+    
+    # 3. Находим профили всех пользователей, которые поставили лайк
+    liker_profiles = UserProfile.objects.filter(user_id__in=liker_ids)
+    
+    context = {
+        'profiles': liker_profiles,
+    }
+    return render(request, 'profiles/likes_received_list.html', context)
+
+
 
