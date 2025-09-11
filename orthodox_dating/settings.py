@@ -1,24 +1,17 @@
 import os
 from pathlib import Path
-import dj_database_url
-import cloudinary
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Секретный ключ и режим отладки теперь берутся из окружения
-SECRET_KEY = os.environ.get('SECRET_KEY')
-DEBUG = os.environ.get('DEBUG') == 'True'
+# Теперь секретный ключ и режим отладки берутся из файла .env
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-# ALLOWED_HOSTS теперь берется из окружения Render,
-# что позволяет работать с кастомным доменом
-ALLOWED_HOSTS = [os.environ.get('RENDER_EXTERNAL_HOSTNAME')]
+# Позже здесь нужно будет указать ваш реальный домен
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
-# Cloudinary - возвращаем правильные настройки
-cloudinary.config(
-    secure=True
-)
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Application definition
 INSTALLED_APPS = [
@@ -29,17 +22,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Наши приложения
-    'profiles.apps.ProfilesConfig',
+    'profiles.apps.ProfilesConfig', # Указываем явно, чтобы избежать проблем
     # Сторонние библиотеки
     'crispy_forms',
     "crispy_bootstrap5",
-    'cloudinary',
-    'cloudinary_storage' # Добавляем Cloudinary Storage
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # Middleware для whitenoise
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -61,7 +52,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'profiles.context_processors.unread_notifications_count',
+                'profiles.context_processors.unread_notifications_count', # Правильный путь
             ],
         },
     },
@@ -71,9 +62,10 @@ WSGI_APPLICATION = 'orthodox_dating.wsgi.application'
 
 # Database
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL')
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 # Password validation
@@ -86,7 +78,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'ru-ru'
-TIME_ZONE = 'Europe/Kiev' # Изменил на более подходящий часовой пояс
+TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 USE_TZ = True
 
@@ -111,6 +103,8 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
+
+
 
 
 
