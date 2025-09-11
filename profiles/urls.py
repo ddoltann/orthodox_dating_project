@@ -15,6 +15,8 @@ urlpatterns = [
     path('notifications/', views.notification_list, name='notification_list'),
     path('photo/delete/<int:photo_id>/', views.delete_photo, name='delete_photo'),
     path('api/chat/<int:pk>/messages/<str:last_timestamp>/', views.get_new_messages, name='get_new_messages'),
+    path('likes-me/', views.likes_received_list, name='likes_received_list'),
 ]
+
 
 
