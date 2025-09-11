@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from decouple import config
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -61,8 +62,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'orthodox_dating.wsgi.application'
 
 # Database
-import dj_database_url
-import os
 
 DATABASES = {
     'default': dj_database_url.config(
@@ -104,6 +103,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
+
 
 
 
