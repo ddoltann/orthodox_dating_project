@@ -119,7 +119,7 @@ class Photo(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='photos', verbose_name="Профиль пользователя")
     
     # Заменяем ImageField на CloudinaryField
-    image = CloudinaryField('image', verbose_name="Фото")
+    image = CloudinaryField(verbose_name="Фото")
     
     uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата загрузки")
 
@@ -130,5 +130,6 @@ class Photo(models.Model):
 
     def __str__(self):
         return f"Фото для {self.user_profile.user.username} от {self.uploaded_at.strftime('%Y-%m-%d')}"
+
 
 
