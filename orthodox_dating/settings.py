@@ -65,7 +65,8 @@ WSGI_APPLICATION = 'orthodox_dating.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL')
+        default='postgresql://postgres:postgres@localhost:5432/mysite',
+        conn_max_age=600
     )
 }
 
@@ -104,6 +105,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
+
 
 
 
