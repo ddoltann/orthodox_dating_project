@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils import timezone
+from cloudinary.models import CloudinaryField  # <-- Импортируем CloudinaryField
 
 class UserProfile(models.Model):
     GENDER_CHOICES = (('М', 'Мужской'), ('Ж', 'Женский'))
@@ -13,7 +14,10 @@ class UserProfile(models.Model):
     patronymic = models.CharField(max_length=100, blank=True, verbose_name="Отчество")
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, verbose_name="Пол")
     date_of_birth = models.DateField(verbose_name="Дата рождения")
-    photo = models.ImageField(upload_to='profile_pics/', default='profile_pics/default.jpg', verbose_name="Фотография")
+    
+    # Заменяем ImageField на CloudinaryField
+    photo = CloudinaryField('photo', verbose_name="Фотография") 
+    
     city = models.CharField(max_length=100, verbose_name="Город")
     about_me = models.TextField(blank=True, verbose_name="О себе")
     height = models.PositiveIntegerField(blank=True, null=True, verbose_name="Рост (см)")
@@ -31,6 +35,7 @@ class UserProfile(models.Model):
 
     def __str__(self): 
         return f'Профиль пользователя {self.user.username}'
+    
     class Meta:
         verbose_name = "Профиль пользователя"
         verbose_name_plural = "Профили пользователей"
@@ -41,6 +46,9 @@ class UserProfile(models.Model):
             today = date.today()
             return today.year - self.date_of_birth.year - ((today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
         return 0
+
+# Другие модели не изменяются, так как они не связаны напрямую с хранением изображений в вашей текущей реализации.
+# Однако, модель Photo тоже нужно будет обновить, заменив image = models.ImageField(...) на image = CloudinaryField(...).
 
 class Like(models.Model):
     user_from = models.ForeignKey(User, related_name='likes_sent', on_delete=models.CASCADE, verbose_name="От кого")
@@ -109,7 +117,10 @@ class Photo(models.Model):
     Модель для хранения фотографий пользователей.
     """
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='photos', verbose_name="Профиль пользователя")
-    image = models.ImageField(upload_to='photos/%Y/%m/%d/', verbose_name="Фото")
+    
+    # Заменяем ImageField на CloudinaryField
+    image = CloudinaryField('image', verbose_name="Фото")
+    
     uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата загрузки")
 
     class Meta:
@@ -119,3 +130,4 @@ class Photo(models.Model):
 
     def __str__(self):
         return f"Фото для {self.user_profile.user.username} от {self.uploaded_at.strftime('%Y-%m-%d')}"
+
