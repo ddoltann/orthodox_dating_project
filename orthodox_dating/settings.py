@@ -3,6 +3,7 @@ from pathlib import Path
 from decouple import config
 import dj_database_url
 from decouple import config
+import cloudinary
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -14,11 +15,11 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 # Позже здесь нужно будет указать ваш реальный домен
 ALLOWED_HOSTS = ['orthodox-dating-project.onrender.com']
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
-}
+# Настройте Cloudinary, чтобы он автоматически использовал CLOUDINARY_URL
+cloudinary.config(
+    secure=True
+)
+# Используйте CloudinaryStorage в качестве хранилища по умолчанию для медиафайлов
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Application definition
@@ -112,6 +113,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
+
 
 
 
