@@ -12,7 +12,10 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light shadow-sm" style="background-color: #0c0d0b;">
         <div class="container">
-            <a class="navbar-brand" href="{% if user.is_authenticated %}{% url 'profiles:home' %}{% else %}{% url 'login' %}{% endif %}"><img style="width: 130px; border-radius: 86px;" src="{% static "img/logo.png" %}" alt="logo.png"></a>
+            <a class="navbar-brand" href="{% if user.is_authenticated %}{% url 'profiles:home' %}{% else %}{% url 'login' %}{% endif %}">
+                {% load static %}
+                    <img style="width: 130px; border-radius: 86px;" src="{% static "img/logo.png" %}" alt="logo.png">
+            </a>
             <ul class="navbar-nav ms-auto align-items-center">
                 {% if user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" style="color: #e9d884" href="{% url 'profiles:profile_list' %}">Анкеты</a></li>
@@ -47,4 +50,5 @@
 </body>
 
 </html>
+
 
