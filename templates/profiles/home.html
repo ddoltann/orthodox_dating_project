@@ -10,9 +10,9 @@
         <p class="lead">Площадка для серьезных знакомств среди православных христиан с целью создания семьи.</p>
         <hr class="my-4 bg-light">
         {% if user.is_authenticated %}
-            <a class="btn btn-primary btn-lg" style="background-color: #0c0d0b; color: #e9d884;" href="{% url 'profiles:profile_list' %}" role="button">Смотреть анкеты</a>
+            <a class="btn btn-light btn-lg" style="background-color: #0c0d0b; color: #e9d884;" href="{% url 'profiles:profile_list' %}" role="button">Смотреть анкеты</a>
         {% else %}
-            <a class="btn btn-primary btn-lg" style="background-color: #0c0d0b; color: #e9d884;" href="{% url 'profiles:register' %}" role="button">Создать анкету</a>
+            <a class="btn btn-light btn-lg" style="background-color: #0c0d0b; color: #e9d884;" href="{% url 'profiles:register' %}" role="button">Создать анкету</a>
             <a class="btn btn-light btn-lg" style="background-color: #0c0d0b; color: #e9d884;" href="{% url 'login' %}" role="button">Войти</a>
         {% endif %}
     </div>
@@ -44,5 +44,6 @@
     </div>
 </div>
 {% endblock %}
+
 
 
