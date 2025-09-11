@@ -16,7 +16,7 @@ class UserProfile(models.Model):
     date_of_birth = models.DateField(verbose_name="Дата рождения")
     
     # Заменяем ImageField на CloudinaryField
-    photo = CloudinaryField('photo', verbose_name="Фотография") 
+    photo = CloudinaryField(verbose_name="Фотография") 
     
     city = models.CharField(max_length=100, verbose_name="Город")
     about_me = models.TextField(blank=True, verbose_name="О себе")
@@ -130,4 +130,5 @@ class Photo(models.Model):
 
     def __str__(self):
         return f"Фото для {self.user_profile.user.username} от {self.uploaded_at.strftime('%Y-%m-%d')}"
+
 
