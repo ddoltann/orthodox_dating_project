@@ -73,3 +73,4 @@ class PhotoForm(forms.ModelForm):
         fields = ['image']
         labels = {'image': 'Выберите файл'}
 
+
