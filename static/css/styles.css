@@ -11,6 +11,11 @@ body {
     overflow-x: hidden;
 }
 
+body.bg-light {
+  min-height: 100vh; /* Минимальная высота - 100% от высоты окна */
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* Описываем строки сетки */
+}
 
  .notification-badge { 
     position: absolute; 
@@ -54,11 +59,11 @@ main {
 } 
 
 .hero-section {
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(../img/hero-bg.jpg) no-repeat;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(../images/hero-bg.jpg) no-repeat;
     background-size: cover;
     background-position: center;
     width: 100%;
-    height: 475px;
+    height: 450px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -98,3 +103,4 @@ main {
     justify-content: center;
 
 }
+
