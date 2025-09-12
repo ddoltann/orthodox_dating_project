@@ -59,7 +59,7 @@ main {
 } 
 
 .hero-section {
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(../images/hero-bg.jpg) no-repeat;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(../img/hero-bg.jpg) no-repeat;
     background-size: cover;
     background-position: center;
     width: 100%;
@@ -103,4 +103,5 @@ main {
     justify-content: center;
 
 }
+
 
