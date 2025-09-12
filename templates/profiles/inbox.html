@@ -1,8 +1,13 @@
 {% extends "profiles/base.html" %}
+{% load static %}
 {% block title %}Мои сообщения{% endblock %}
 
 {% block content %}
 <h1 class="mb-4">Мои сообщения</h1>
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">  
+{% endblock css %}
 
 <div class="list-group">
     {% for person in interlocutors %}
@@ -19,5 +24,8 @@
         <div class="alert alert-info">У вас пока нет диалогов. Выразите кому-нибудь симпатию, чтобы начать общение.</div>
     {% endfor %}
 </div>
+{% block footer %}
+{% endblock footer %}
 {% endblock %}
+
 
