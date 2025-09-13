@@ -43,7 +43,12 @@
                                     <li><a class="dropdown-item" href="{% url 'profiles:profile_detail' pk=user.pk %}"style="color: #e9d884;">Мой профиль</a></li>
                                     <li><a class="dropdown-item" href="{% url 'profiles:edit_profile' %}" style="color: #e9d884;">Редактировать</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{% url 'logout' %}" style="color: #e9d884;">Выйти</a></li>
+                                    <li>
+                                    <form action="{% url 'logout' %}" method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item">Выйти</button>
+                                    </form>
+                                </li>
                                 </ul>
                             </li>
                         {% else %}
@@ -73,6 +78,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
 
