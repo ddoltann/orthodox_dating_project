@@ -1,0 +1,18 @@
+{% extends "profiles/base.html" %}
+{% load static %}
+{% block title %}Вы вышли{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h2 class="card-title">Вы вышли из системы</h2>
+                <p>Спасибо, что посетили наш сайт. Ждем вас снова!</p>
+                <a href="{% url 'login' %}" class="btn btn-primary">Войти снова</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

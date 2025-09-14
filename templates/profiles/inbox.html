@@ -1,0 +1,29 @@
+{% extends "profiles/base.html" %}
+{% load static %}
+{% block title %}Мои сообщения{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Мои сообщения</h1>
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">  
+{% endblock css %}
+
+<div class="list-group">
+    {% for person in interlocutors %}
+        <a href="{% url 'profiles:conversation_detail' pk=person.pk %}" class="list-group-item list-group-item-action d-flex gap-3 py-3">
+            <img style="width: 87px; height: 100px" src="{{ person.userprofile.photo.url }}" alt="Фото {{ person.first_name }}" width="48" height="48" class="rounded-circle flex-shrink-0">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+                <div>
+                    <h6 class="mb-0">{{ person.first_name }}</h6>
+                    <p class="mb-0 opacity-75">Перейти к диалогу...</p>
+                </div>
+            </div>
+        </a>
+    {% empty %}
+        <div class="alert alert-info">У вас пока нет диалогов. Выразите кому-нибудь симпатию, чтобы начать общение.</div>
+    {% endfor %}
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,159 @@
+{% extends "profiles/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block title %}Редактирование профиля{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- КОЛОНКА 1: РЕДАКТИРОВАНИЕ ДАННЫХ ПРОФИЛЯ -->
+    <div class="col-lg-7">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h2 class="card-title text-center">Редактирование профиля</h2>
+                <!-- Основная форма для данных пользователя и профиля -->
+                <form method="post" enctype="multipart/form-data" id="profile-update-form">
+                    {% csrf_token %}
+                    <fieldset class="mb-3">
+                        <legend class="h5">Основные данные</legend>
+                        {{ user_form|crispy }}
+                    </fieldset>
+                    <fieldset>
+                        <legend class="h5">Подробная информация</legend>
+
+                        <!-- Блок-помощник с Gemini API -->
+                        <div class="card bg-light border-primary border-opacity-25 mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">✨ Помощник для раздела "О себе"</h6>
+                                <p class="card-text small text-muted">Не знаете, что написать? Укажите несколько ключевых слов (например: "люблю природу, ищу серьезные отношения, работаю инженером, ценю честность"), и наш помощник создаст для вас текст.</p>
+                                <div class="mb-2">
+                                    <label for="bio-keywords" class="form-label">Ключевые слова:</label>
+                                    <input type="text" id="bio-keywords" class="form-control" placeholder="Например: люблю читать, служу в храме...">
+                                </div>
+                                <button type="button" id="generate-bio-btn" class="btn btn-outline-primary btn-sm">
+                                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true" id="bio-spinner"></span>
+                                    Сгенерировать текст
+                                </button>
+                            </div>
+                        </div> 
+                        
+                        <!-- Форма с деталями профиля (О себе, рост и т.д.) -->
+                        {{ profile_form|crispy }}
+
+                    </fieldset>
+                    <div class="d-grid">
+                        <!-- Кнопка для сохранения изменений профиля -->
+                        <button type="submit" name="update_profile" class="btn mt-3" style="background-color: #0c0d0b; color: #e9d884;">Сохранить изменения</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- КОЛОНКА 2: УПРАВЛЕНИЕ ФОТОГРАФИЯМИ -->
+    <div class="col-lg-5">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h2 class="card-title text-center">Мои фотографии</h2>
+                
+                <!-- Форма для загрузки нового фото -->
+                <form method="post" enctype="multipart/form-data" class="mb-4">
+                    {% csrf_token %}
+                    {{ photo_form|crispy }}
+                    <div class="d-grid">
+                         <!-- Кнопка для загрузки нового фото -->
+                        <button type="submit" name="upload_photo" class="btn btn-success mt-2">Загрузить фото</button>
+                    </div>
+                </form>
+                
+                <hr>
+                
+                <!-- Галерея существующих фото -->
+                <h5 class="mb-3">Загруженные фото:</h5>
+                <div class="row g-2">
+                    {% for photo in user_photos %}
+                    <div class="col-6 col-md-4">
+                        <div class="position-relative">
+                            <img src="{{ photo.image.url }}" class="img-fluid rounded" alt="Фото">
+                            <!-- Форма для удаления фото (маленькая кнопка-крестик) -->
+                            <form method="post" action="{% url 'profiles:delete_photo' photo.id %}" class="position-absolute top-0 end-0 m-1">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm rounded-circle" onclick="return confirm('Вы уверены, что хотите удалить это фото?');">&times;</button>
+                            </form>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted">У вас пока нет дополнительных фотографий.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT ДЛЯ РАБОТЫ С GEMINI API -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const generateBtn = document.getElementById('generate-bio-btn');
+    const keywordsInput = document.getElementById('bio-keywords');
+    const aboutMeTextarea = document.querySelector('#div_id_about_me textarea');
+    const spinner = document.getElementById('bio-spinner');
+
+    if (generateBtn) {
+        generateBtn.addEventListener('click', async () => {
+            const keywords = keywordsInput.value;
+            if (!keywords.trim()) {
+                alert('Пожалуйста, введите ключевые слова.');
+                return;
+            }
+
+            spinner.classList.remove('d-none');
+            generateBtn.disabled = true;
+
+            const apiKey = ""; // API-ключ будет предоставлен средой выполнения
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            const systemPrompt = `Ты — деликатный и мудрый помощник на православном сайте знакомств. Твоя задача — помочь пользователю написать искренний и привлекательный текст для анкеты в разделе 'О себе'. Текст должен быть скромным, отражать православные ценности, говорить о поиске серьезных отношений для создания семьи. Не используй высокопарные или банальные фразы. Напиши связный, теплый текст от первого лица на основе ключевых слов, которые предоставит пользователь. Длина текста - 3-4 предложения.`;
+            const userQuery = `Сгенерируй текст 'О себе' на основе этих ключевых слов: "${keywords}"`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+            };
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`Ошибка API: ${response.statusText}`);
+
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    aboutMeTextarea.value = candidate.content.parts[0].text;
+                } else {
+                    alert('Произошла ошибка при генерации текста. Пожалуйста, попробуйте еще раз.');
+                }
+
+            } catch (error) {
+                console.error('Ошибка при обращении к Gemini API:', error);
+                alert('Не удалось связаться с помощником. Проверьте ваше интернет-соединение и попробуйте позже.');
+            } finally {
+                spinner.classList.add('d-none');
+                generateBtn.disabled = false;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+

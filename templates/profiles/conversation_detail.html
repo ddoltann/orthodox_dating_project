@@ -1,0 +1,108 @@
+{% extends "profiles/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}Диалог с {{ interlocutor.first_name }}{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">
+    Диалог с <a href="{% url 'profiles:profile_detail' pk=interlocutor.pk %}" class="text-decoration-none" style="color: #c39d0a;">{{ interlocutor.first_name }}</a>
+</h1>
+
+<div class="card shadow-sm">
+    <div id="chat-log" class="card-body" style="height: 60vh; overflow-y: auto;">
+        {% for message in messages_list %}
+            <div class="d-flex mb-3 {% if message.sender == user %}justify-content-end{% else %}justify-content-start{% endif %}">
+                <div class="card {% if message.sender == user %}{% else %}bg-light{% endif %}" style="max-width: 70%; background-color: #0c0d0b; color: #c39d0a;">
+                    <div class="card-body p-2">
+                        <p class="mb-0">{{ message.content }}</p>
+                        <small class="d-block text-end {% if message.sender == user %}text-white{% else %}text-muted{% endif %}" style="font-size: 0.75rem;">
+                            {{ message.timestamp|time:"H:i" }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="card-footer">
+        <!-- Форма теперь отправляется стандартным способом -->
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-group">
+                {{ form|crispy }}
+                <button class="btn" type="submit" style="background-color: #0c0d0b; color: #e9d884; margin-bottom: 16px;">
+                    <i class="bi bi-send-fill"></i> Отправить
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{ interlocutor.pk|json_script:"interlocutor-id" }}
+{{ user.id|json_script:"current-user-id" }}
+<!-- Сохраняем timestamp последнего сообщения -->
+{% if messages_list.last %}
+    {{ messages_list.last.timestamp.isoformat|json_script:"last-timestamp" }}
+{% else %}
+    {{ "1970-01-01T00:00:00+00:00"|json_script:"last-timestamp" }}
+{% endif %}
+
+
+<script>
+    const interlocutorId = JSON.parse(document.getElementById('interlocutor-id').textContent);
+    const currentUserId = JSON.parse(document.getElementById('current-user-id').textContent);
+    let lastTimestamp = JSON.parse(document.getElementById('last-timestamp').textContent);
+    const chatLog = document.getElementById('chat-log');
+
+    function scrollToBottom() {
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
+    scrollToBottom();
+
+    // Функция для получения новых сообщений
+    async function fetchNewMessages() {
+        try {
+            const response = await fetch(`/api/chat/${interlocutorId}/messages/${lastTimestamp}/`);
+            if (!response.ok) return;
+
+            const data = await response.json();
+            
+            if (data.messages.length > 0) {
+                data.messages.forEach(msg => {
+                    const isSender = msg.sender_id === currentUserId;
+                    const messageHtml = `
+                        <div class="d-flex mb-3 ${isSender ? 'justify-content-end' : 'justify-content-start'}">
+                            <div class="card ${isSender ? 'bg-primary text-white' : 'bg-light'}" style="max-width: 70%;">
+                                <div class="card-body p-2">
+                                    <p class="mb-0">${msg.content}</p>
+                                    <small class="d-block text-end ${isSender ? 'text-white-50' : 'text-muted'}" style="font-size: 0.75rem;">
+                                        ${msg.timestamp}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    chatLog.innerHTML += messageHtml;
+                });
+                lastTimestamp = data.last_timestamp; // Обновляем timestamp
+                scrollToBottom();
+            }
+        } catch (error) {
+            console.error("Ошибка при получении сообщений:", error);
+        }
+    }
+
+    // Запускаем опрос сервера каждые 3 секунды
+    setInterval(fetchNewMessages, 3000);
+</script>
+<style>
+    .crispy-form-part { margin-bottom: 0 !important; }
+</style>
+{% endblock %}
+
+
+
+
+
+
+

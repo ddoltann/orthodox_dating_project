@@ -1,0 +1,64 @@
+{% extends "profiles/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Анкеты{% endblock %}
+
+{% block content %}
+<!-- БЛОК С ФОРМОЙ ПОИСКА И ФИЛЬТРАМИ -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h2 class="card-title mb-3">Поиск анкет</h2>
+        <form method="get" class="g-3">
+            <!-- ИСПОЛЬЗУЕМ ЕДИНЫЙ ФИЛЬТР ДЛЯ ВСЕЙ ФОРМЫ -->
+            {{ form|crispy }}
+            <div class="d-grid d-flex mt-3 gap-2 justify-content-center">
+                <button type="submit" class="btn" style="background-color: #0c0d0b; color: #e9d884;">
+                    <i class="bi bi-search"></i> Найти
+                </button>
+                <a href="{% url 'profiles:profile_list' %}" class="btn" style="background-color: #30302f; color: #e9d884;">
+                    <i class="bi bi-x-lg"></i> Сбросить
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ЗАГОЛОВОК СПИСКА АНКЕТ -->
+<h1 class="mb-4 text-center">Все анкеты</h1>
+
+<!-- СПИСОК АНКЕТ -->
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for profile in profiles %}
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <a href="{% url 'profiles:profile_detail' pk=profile.user.pk %}">
+                <img src="{{ profile.photo.url }}" class="card-img-top" alt="Фото {{ profile.user.first_name }}" style="height: 425px; object-fit: cover;">
+            </a>
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{% url 'profiles:profile_detail' pk=profile.user.pk %}" class="text-decoration-none text-dark">
+                        {{ profile.user.first_name }}, {{ profile.age }}
+                        {% if profile.is_verified %}
+                            <i class="bi bi-patch-check-fill text-primary" title="Профиль верифицирован"></i>
+                        {% endif %}
+                    </a>
+                </h5>
+                <p class="card-text text-muted">{{ profile.city }}</p>
+                <p class="card-text">{{ profile.about_me|truncatewords:15 }}</p>
+                <a href="{% url 'profiles:profile_detail' pk=profile.user.pk %}" class="btn" style="background-color: #0c0d0b; color: #e9d884;">Смотреть профиль</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            <p class="mb-0">По вашему запросу анкет не найдено. Попробуйте изменить критерии поиска или сбросить фильтр.</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+
+

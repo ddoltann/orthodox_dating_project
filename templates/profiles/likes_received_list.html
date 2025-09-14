@@ -1,0 +1,41 @@
+{% extends "profiles/base.html" %}
+{% load static %}
+
+{% block title %}Кто мной интересуется?{% endblock %}
+
+{% block content %}
+<h1 class="mb-4 text-center">Кто мной интересуется?</h1>
+
+<p class="lead text-center" style="color: #c39d0a;">На этой странице показаны пользователи, которые выразили вам симпатию. <br>Ответьте им взаимностью, чтобы начать общение!</p>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for profile in profiles %}
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <a href="{% url 'profiles:profile_detail' pk=profile.user.pk %}">
+                <img src="{{ profile.photo.url }}" class="card-img-top" alt="Фото {{ profile.user.first_name }}" style="height: 100%; object-fit: cover;">
+            </a>
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{% url 'profiles:profile_detail' pk=profile.user.pk %}" class="text-decoration-none text-dark">
+                        {{ profile.user.first_name }}, {{ profile.age }}
+                        {% if profile.is_verified %}
+                            <i class="bi bi-patch-check-fill text-primary" title="Профиль верифицирован"></i>
+                        {% endif %}
+                    </a>
+                </h5>
+                <p class="card-text text-muted">{{ profile.city }}</p>
+                <a href="{% url 'profiles:profile_detail' pk=profile.user.pk %}" class="btn" style="background-color: #0c0d0b; color: #e9d884;">Смотреть профиль</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            <p class="mb-0 text-center">Пока никто не выразил вам симпатию. Не переживайте, ваша анкета обязательно кому-нибудь понравится!</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+

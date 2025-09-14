@@ -1,0 +1,29 @@
+{% extends "profiles/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Регистрация{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h2 class="card-title text-center">Создание аккаунта</h2>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <fieldset class="mb-3">
+                        <legend class="h5">Шаг 1: Данные для входа</legend>
+                        {{ user_form|crispy }}
+                    </fieldset>
+                    <fieldset>
+                        <legend class="h5">Шаг 2: Информация о себе</legend>
+                        {{ profile_form|crispy }}
+                    </fieldset>
+                    <div class="d-grid">
+                        <button type="submit" class="btn mt-3" style="background-color: #0c0d0b; color: #e9d884;">Зарегистрироваться</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

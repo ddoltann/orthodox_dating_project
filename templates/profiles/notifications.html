@@ -1,0 +1,20 @@
+{% extends "profiles/base.html" %}
+{% load static %}
+{% block title %}Мои уведомления{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Мои уведомления</h1>
+<div class="list-group">
+    {% for notification in notifications %}
+        <a href="{{ notification.link }}" class="list-group-item list-group-item-action {% if not notification.is_read %}list-group-item-info{% endif %}">
+            <div class="d-flex w-100 justify-content-between">
+                <p class="mb-1">{{ notification.message }}</p>
+                <small class="text-muted">{{ notification.created_at|timesince }} назад</small>
+            </div>
+        </a>
+    {% empty %}
+        <div class="alert alert-info">У вас пока нет уведомлений.</div>
+    {% endfor %}
+</div>
+{% endblock %}
+
